@@ -1,0 +1,15 @@
+
+Tutorial: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
+
+Setup:
+ - Modify nginx.conf to include the proper domain
+ - Modify the certbot service definition to include the correct email and domain
+ - Modify .env to include prefered mysql info
+ - curl -sSLo nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+
+Run: docker-compose up -d
+
+Check status:
+ - docker-compose ps
+   If srvice is not 0 or up:
+   - docker-compose logs service_name
