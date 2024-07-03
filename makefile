@@ -113,7 +113,7 @@ create-env-file:
 # Modify NGINX configuration to include external domains
 modify-nginx-config:
 	@echo "Modifying NGINX configuration to include external domains..."
-	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' /etc/nginx/nginx.conf
+	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./nginx-conf/nginx.conf
 	@echo "NGINX configuration modified."
 
 # Update Certbot configuration in docker-compose.yml
