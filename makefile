@@ -19,7 +19,7 @@ MYSQL_ROOT_PASSWORD := heythereroot
 MYSQL_USER := mysqluser
 MYSQL_PASSWORD := heythere
 EXTERNAL_DOMAIN := adhesiveaesthetics.com
-CERTIFICATE_DOMAIN_FOLDER := adhesiveaesthetics-com
+CERTIFICATE_DOMAIN_FOLDER := adhesiveaesthetics.com
 EMAIL := chaseglong@gmail.com
 
 # Start containers with mounts for development
