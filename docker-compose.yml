@@ -55,7 +55,7 @@ services:
     volumes:
       - certbot-etc:/etc/letsencrypt
       - wordpress:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email chaseglong@gmail.com --agree-tos --no-eff-email --force-renewal -d adhesiveaesthetics.com -d www.adhesiveaesthetics.com
+    command: certonly --webroot --webroot-path=/var/www/html --email [EMAIL] --agree-tos --no-eff-email --force-renewal -d [EXTERNAL_DOMAIN] -d www.[EXTERNAL_DOMAIN]
 
 volumes:
   certbot-etc:

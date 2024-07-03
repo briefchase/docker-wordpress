@@ -1,15 +1,15 @@
-.PHONY: all check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config stop-and-clean
+.PHONY: all check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config stop-and-clean create-env-file modify-nginx-config modify-certbot-service
 
-# Install
+# Setup tasks
 setup: check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config
 
-# Stop
+# Stop all containers and clean up
 stop: stop-and-clean
 
-# Run (Debug)
+# Run in development mode
 go: run-mounted
 
-# Run (Production)
+# Run in production mode
 live: run-headless destroy-clone
 
 # Variables
@@ -21,38 +21,44 @@ MYSQL_PASSWORD := heythere
 EXTERNAL_DOMAIN := adhesiveaesthetics.com
 EMAIL := chaseglong@gmail.com
 
-
- # target to modify nginx.conf to include the EXTERNAL_DOMAIN
- # target to Modify the certbot service definition to include EMAIL and EXTERNAL_DOMAIN
-
-
+# Start containers with mounts for development
 run-mounted:
 	@sudo docker-compose up
 
+# Start containers in detached mode
 run-headless:
 	@sudo docker-compose up -d
 
+# Example of a target to clean up a directory
 destroy-clone:
-# idk but destroy this repo
-	@sudo
+	@sudo rm -rf /path/to/previous/file
 
+# Check if Docker is installed and install if not
 check-docker:
 	@command -v docker > /dev/null || (echo "Docker is not installed, installing now..." && make install-docker)
 
+# Install Docker
 install-docker:
-	@curl -fsSL https://get.docker.com -o get-docker.sh
-	@sudo sh get-docker.sh
-	@rm get-docker.sh
+	@echo "Checking if target directory exists..."
+	@test -d /some/directory || (echo "Directory does not exist. Creating now..." && sudo mkdir -p /some/directory)
+	@echo "Attempting to download Docker installer..."
+	@curl -fsSL https://get.docker.com -o /some/directory/get-docker.sh || (echo "Failed to download. Check permissions and disk space." && exit 1)
+	@echo "Running Docker installer..."
+	@sudo sh /some/directory/get-docker.sh
+	@rm /some/directory/get-docker.sh
 	@echo "Docker installed."
 
+
+# Stop all running containers
 stop-containers:
 	@CONTAINERS_RUNNING=$$(sudo docker ps -aq); \
-	if [ ! -z "$$CONTAINERS_RUNNING" ]; then \
+	if [ -n "$$CONTAINERS_RUNNING" ]; then \
 		sudo docker stop $$CONTAINERS_RUNNING; \
 	else \
 		echo "No containers to stop."; \
 	fi
 
+# Stop and remove all containers, images, and networks
 stop-and-clean:
 	@echo "Stopping all Docker containers..."
 	@sudo docker stop $$(sudo docker ps -aq)
@@ -64,28 +70,34 @@ stop-and-clean:
 	@sudo docker network prune -f
 	@echo "Docker environment cleaned up. Volumes preserved."
 
+# Remove all unused Docker data
 nuke-docker:
 	@sudo docker system prune -a -f --volumes
 	@echo "Docker system pruned."
 
+# Restart Docker service
 restart-docker:
 	@sudo systemctl restart docker
 	@echo "Docker service restarted."
 
+# Install or upgrade Docker Compose
 install-docker-compose:
 	@echo "Installing/upgrading Docker Compose to version $(DOCKER_COMPOSE_VERSION)..."
-	@sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$$(uname -s)-$$(uname -m)" -o $(DOCKER_COMPOSE_PATH)
+	@sudo curl -L "https://github.com/docker/compose/releases/download/v$(DOCKER_COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)" -o $(DOCKER_COMPOSE_PATH)
 	@sudo chmod +x $(DOCKER_COMPOSE_PATH)
 	@echo "Docker Compose installed/upgraded."
 
+# Verify Docker and Docker Compose installations
 verify-installation:
 	@docker --version
 	@docker-compose --version
 
+# Download NGINX SSL configuration
 download-nginx-config:
 	@sudo curl -sSLo /etc/nginx/conf.d/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
 	@echo "NGINX SSL configuration downloaded."
 
+# Create .env file with MySQL configuration
 create-env-file:
 	@echo "Creating .env file with MySQL configuration..."
 	@echo "MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)" > .env
@@ -93,13 +105,15 @@ create-env-file:
 	@echo "MYSQL_PASSWORD=$(MYSQL_PASSWORD)" >> .env
 	@echo ".env file created with database credentials."
 
+# Modify NGINX configuration to include external domains
 modify-nginx-config:
 	@echo "Modifying NGINX configuration to include external domains..."
 	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' /etc/nginx/nginx.conf
 	@echo "NGINX configuration modified."
 
-update-certbot-config:
+# Update Certbot configuration in docker-compose.yml
+modify-certbot-service:
 	@echo "Updating Certbot configuration..."
-	@sudo sed -i 's/\[EMAIL\]/$(EMAIL)/g' /etc/letsencrypt/cli.ini
-	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' /etc/letsencrypt/cli.ini
+	@sudo sed -i 's/\[EMAIL\]/$(EMAIL)/g' ./docker-compose.yml
+	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./docker-compose.yml
 	@echo "Certbot configuration updated."
