@@ -19,6 +19,7 @@ MYSQL_ROOT_PASSWORD := heythereroot
 MYSQL_USER := mysqluser
 MYSQL_PASSWORD := heythere
 EXTERNAL_DOMAIN := adhesiveaesthetics.com
+CERTIFICATE_DOMAIN_FOLDER := adhesiveaesthetics-com
 EMAIL := chaseglong@gmail.com
 
 # Start containers with mounts for development
@@ -114,6 +115,7 @@ create-env-file:
 modify-nginx-config:
 	@echo "Modifying NGINX configuration to include external domains..."
 	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./nginx-conf/nginx.conf
+	@sudo sed -i 's/\[CERTIFICATE_DOMAIN_FOLDER\]/$(CERTIFICATE_DOMAIN_FOLDER)/g' ./nginx-conf/nginx.conf
 	@echo "NGINX configuration modified."
 
 # Update Certbot configuration in docker-compose.yml
