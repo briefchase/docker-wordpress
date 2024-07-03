@@ -105,9 +105,9 @@ download-nginx-config:
 # Create .env file with MySQL configuration
 create-env-file:
 	@echo "Creating .env file with MySQL configuration..."
-	@echo "MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)" > .env
-	@echo "MYSQL_USER=$(MYSQL_USER)" >> .env
-	@echo "MYSQL_PASSWORD=$(MYSQL_PASSWORD)" >> .env
+	@sudo sh -c 'echo "MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)" > .env'
+	@sudo sh -c 'echo "MYSQL_USER=$(MYSQL_USER)" >> .env'
+	@sudo sh -c 'echo "MYSQL_PASSWORD=$(MYSQL_PASSWORD)" >> .env'
 	@echo ".env file created with database credentials."
 
 # Modify NGINX configuration to include external domains
