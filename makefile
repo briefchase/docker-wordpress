@@ -1,7 +1,7 @@
 .PHONY: all check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config stop-and-clean create-env-file modify-nginx-config modify-certbot-service
 
 # Setup tasks
-setup: check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config
+setup: check-docker install-docker stop-containers nuke-docker restart-docker install-docker-compose verify-installation download-nginx-config modify-nginx-config modify-certbot-service
 
 # Stop all containers and clean up
 stop: stop-and-clean
