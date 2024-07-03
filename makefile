@@ -38,15 +38,20 @@ check-docker:
 	@command -v docker > /dev/null || (echo "Docker is not installed, installing now..." && make install-docker)
 
 # Install Docker
-install-docker:
-	@echo "Checking if target directory exists..."
-	@test -d /some/directory || (echo "Directory does not exist. Creating now..." && sudo mkdir -p /some/directory)
-	@echo "Attempting to download Docker installer..."
-	@curl -fsSL https://get.docker.com -o /some/directory/get-docker.sh || (echo "Failed to download. Check permissions and disk space." && exit 1)
-	@echo "Running Docker installer..."
-	@sudo sh /some/directory/get-docker.sh
-	@rm /some/directory/get-docker.sh
-	@echo "Docker installed."
+install_docker:
+	@echo "Checking for Docker installation..."
+	@if [ -x "$$(command -v docker)" ]; then \
+		echo "Docker is already installed"; \
+	else \
+		if [ ! -f "./get-docker.sh" ]; then \
+			echo "Downloading get-docker.sh..."; \
+			curl -fsSL https://get.docker.com -o get-docker.sh; \
+		fi; \
+		echo "Making get-docker.sh executable..."; \
+		chmod +x get-docker.sh; \
+		echo "Running get-docker.sh..."; \
+		sudo ./get-docker.sh; \
+	fi
 
 
 # Stop all running containers
