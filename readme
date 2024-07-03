@@ -1,13 +1,25 @@
 
 Tutorial: https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose
 
-Setup:
+Clone This Repo:
+"""
+  sudo apt-get update
+  sudo apt-get upgrade -y
+  sudo apt-get install git -y
+  sudo git clone https://github.com/briefchase/docker-wordpress.git
+  cd docker-wordpress
+  sudo chmod +x *.sh
+"""
+Configure:
  - Modify nginx.conf to include the proper domain
  - Modify the certbot service definition to include the correct email and domain
  - Modify .env to include prefered mysql info
- - curl -sSLo nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
-
-Run: docker-compose up -d
+Setup Docker:
+ - sudo ./system-setup.sh
+Run Attached (Debug):
+ - sudo ./run-attached.sh
+Run Headless:
+ - sudo ./run-headless.sh
 
 Check status:
  - docker-compose ps

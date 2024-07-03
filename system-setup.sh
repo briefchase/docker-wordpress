@@ -3,14 +3,6 @@
 # Constants
 DOCKER_COMPOSE_VERSION='2.20.3'  # Docker Compose software version supporting Compose file format v3
 
-# Update and upgrade the system
-echo "Updating and upgrading the system..."
-sudo apt-get update && sudo apt-get upgrade -y
-
-# Install Git
-echo "Installing Git..."
-sudo apt-get install git -y
-
 # Assert Docker installation
 if command -v docker &>/dev/null; then
   echo "Docker is already installed."
@@ -28,8 +20,8 @@ else
   echo "No containers to stop."
 fi
 
-# Prune Docker system without removing volumes
-sudo docker system prune -a -f
+# Nuke Docker system
+sudo docker system prune -a -f --volumes
 
 # Restart Docker service
 sudo systemctl restart docker
@@ -43,4 +35,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 echo "Verifying installations..."
 docker --version
 docker-compose --version
-git --version
+
+# Do some nginx shit
+sudo curl -sSLo nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
