@@ -99,7 +99,7 @@ verify-installation:
 
 # Download NGINX SSL configuration
 download-nginx-config:
-	@sudo curl -sSLo /etc/nginx/conf.d/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+	@sudo curl -sSLo ./nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
 	@echo "NGINX SSL configuration downloaded."
 
 # Create .env file with MySQL configuration

@@ -3,12 +3,13 @@ Tutorial: https://www.digitalocean.com/community/tutorials/how-to-install-wordpr
 
 Clone This Repo (fill in PASSWORD):
 """
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install git -y
-sudo git clone https://briefchase:PASSWORD@github.com/briefchase/docker-wordpress.git
+sudo apt-get update &&
+sudo apt-get upgrade -y &&
+sudo apt-get install git -y &&
+sudo git clone https://briefchase:PASSWORD@github.com/briefchase/docker-wordpress.git &&
 cd docker-wordpress
 """
+
 Configure:
  - Modify make file as desired
 
