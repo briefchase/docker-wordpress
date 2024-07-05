@@ -5,7 +5,7 @@ go: setup cert-local run-mounted
 # Stop all containers and clean up
 stop: setup docker-clean
 # Run in production mode
-live: run-headless nuke-this
+live: run-headless
 # Variables
 DOCKER_COMPOSE_VERSION := 2.20.3
 DOCKER_COMPOSE_PATH := /usr/local/bin/docker-compose
