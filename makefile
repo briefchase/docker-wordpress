@@ -76,7 +76,7 @@ download-nginx-ssl-config: # Download NGINX SSL configuration
 	@echo "NGINX SSL configuration downloaded."
 create-nginx-config: # Create Templated NGINX configuration
 	@echo "Modifying NGINX configuration to include external domains..."
-	@sudo cp nginx.template.conf nginx.conf
+	@sudo cp nginx-conf/nginx.template.conf nginx-conf/nginx.conf
 	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./nginx-conf/nginx.conf
 	@echo "NGINX configuration modified."
 create-env-sql-file: # Create .env file with MySQL configuration
