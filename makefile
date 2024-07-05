@@ -15,14 +15,14 @@ go: setup run-mounted
 # Run in production mode
 live: setup run-headless
 # Stop all containers and clean up
-stop: docker-clean
+clean: nuke-config
 
 
 # Helpers:
 
 # === SETUP ===
 setup: install-docker restart-docker install-docker-compose verify-docker \
-       download-nginx-config create-env-file modify-nginx-config modify-certbot-service
+       download-nginx-ssl-config create-nginx-config create-env-sql-file create-env-cert-file
 
 # === DOCKER ===
 run-mounted: # Start containers with mounts for development
