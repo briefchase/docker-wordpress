@@ -1,26 +1,28 @@
-# Usage:
+# Variables:
 
-# Run in development mode
-go: setup cert-local run-mounted
-# Stop all containers and clean up
-stop: setup docker-clean
-# Run in production mode
-live: run-headless
-# Variables
 DOCKER_COMPOSE_VERSION := 2.20.3
 DOCKER_COMPOSE_PATH := /usr/local/bin/docker-compose
 MYSQL_ROOT_PASSWORD := heythereroot
 MYSQL_USER := mysqluser
 MYSQL_PASSWORD := heythere
-EXTERNAL_DOMAIN := 35.202.82.182
+EXTERNAL_DOMAIN := adhesiveaesthetics.com
 EMAIL := chaseglong@gmail.com
+
+# Usage:
+
+# Run in development mode
+go: setup run-mounted
+# Run in production mode
+live: setup run-headless
+# Stop all containers and clean up
+stop: docker-clean
+
 
 # Helpers:
 
 # === SETUP ===
 setup: install-docker restart-docker install-docker-compose verify-docker \
-       download-nginx-config create-env-file modify-nginx-config \
-       modify-certbot-service
+       download-nginx-config create-env-file modify-nginx-config modify-certbot-service
 
 # === DOCKER ===
 run-mounted: # Start containers with mounts for development
@@ -87,26 +89,6 @@ modify-certbot-service: # Update Certbot configuration in docker-compose.yml
 	@sudo sed -i 's/\[EMAIL\]/$(EMAIL)/g' ./docker-compose.yml
 	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./docker-compose.yml
 	@echo "Certbot configuration updated."
-
-# === CERTIFICATE HANDLING ===
-cert-local: self-signed-cert update-nginx-self-signed restart-docker
-
-self-signed-cert: # Generate a self-signed certificate for local development
-	@echo "Generating self-signed SSL certificate..."
-	@sudo mkdir -p ./certs
-	@sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/selfsigned.key -out ./certs/selfsigned.crt -subj "/CN=localhost"
-	@echo "Self-signed SSL certificate generated."
-
-update-nginx-self-signed: # Update NGINX configuration for self-signed certificate
-	@echo "Updating NGINX configuration for self-signed certificate..."
-	@sudo sed -i 's|ssl_certificate /etc/letsencrypt/live/$(EXTERNAL_DOMAIN)/fullchain.pem;|ssl_certificate /etc/nginx/certs/selfsigned.crt;|' ./nginx-conf/nginx.conf
-	@sudo sed -i 's|ssl_certificate_key /etc/letsencrypt/live/$(EXTERNAL_DOMAIN)/privkey.pem;|ssl_certificate_key /etc/nginx/certs/selfsigned.key;|' ./nginx-conf/nginx.conf
-	@echo "NGINX configuration updated for self-signed certificate."
-
-cert-deploy: # Obtain and configure Let's Encrypt certificates for deployment
-	@echo "Obtaining and configuring Let's Encrypt certificates..."
-	@sudo docker-compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot/ -d $(EXTERNAL_DOMAIN) --email $(EMAIL) --agree-tos --no-eff-email
-	@echo "Let's Encrypt certificates obtained."
 	
 # === CLEANUP ===
 nuke-this: # destroy the pwd and everything inside of it including this file
