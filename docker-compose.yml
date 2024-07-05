@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     container_name: db
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.sql
     environment:
       - MYSQL_DATABASE=wordpress
     volumes:
@@ -20,7 +20,7 @@ services:
     image: wordpress:5.1.1-fpm-alpine
     container_name: wordpress
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.sql
     environment:
       - WORDPRESS_DB_HOST=db:3306
       - WORDPRESS_DB_USER=$MYSQL_USER
@@ -52,10 +52,12 @@ services:
       - webserver
     image: certbot/certbot
     container_name: certbot
+    env_file: .env.cert
     volumes:
       - certbot-etc:/etc/letsencrypt
       - wordpress:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email [EMAIL] --agree-tos --no-eff-email --force-renewal -d [EXTERNAL_DOMAIN] -d www.[EXTERNAL_DOMAIN]
+    command: certonly --webroot --webroot-path=/var/www/html --email ${EMAIL} --agree-tos --no-eff-email --force-renewal -d ${EXTERNAL_DOMAIN} -d www.${EXTERNAL_DOMAIN}
+
 
 volumes:
   certbot-etc:
