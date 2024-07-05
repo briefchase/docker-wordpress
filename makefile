@@ -95,9 +95,10 @@ create-env-cert-file: # Create .env file with certificate configuration
 # === CLEANUP ===
 nuke-config: # Remove all files generated from configuration
 	@echo "Killing configuration cattle..."
-	@sudo rm .env.sql
-	@sudo rm .env.cert
-	@sudo rm ./nginx-conf/nginx.conf
+	@sudo rm -f .env.sql
+	@sudo rm -f .env.cert
+	@sudo rm -f ./nginx-conf/nginx.conf
+
 
 nuke-this: # destroy the pwd and everything inside of it including this file
 	@sudo rm -rf pwd
