@@ -10,10 +10,11 @@ sudo git clone https://briefchase:PASSWORD@github.com/briefchase/docker-wordpres
 cd docker-wordpress
 """
 
-Configure:
+Use:
  - Modify make file as desired
+ - make [setup go service stop]
 
 Check status:
  - docker-compose ps
-   If srvice is not 0 or up:
+ If service is not 0 or up:
    - docker-compose logs service_name
