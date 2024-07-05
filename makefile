@@ -70,26 +70,34 @@ docker-nuke: # Remove all unused Docker data
 	@sudo docker system prune -a -f --volumes
 	@echo "Docker system pruned."
 	
-# === TEMPLATING ===
-download-nginx-config: # Download NGINX SSL configuration
+# === CONFIGURATION ===
+download-nginx-ssl-config: # Download NGINX SSL configuration
 	@sudo curl -sSLo ./nginx-conf/options-ssl-nginx.conf https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
 	@echo "NGINX SSL configuration downloaded."
-create-env-file: # Create .env file with MySQL configuration
-	@echo "Creating .env file with MySQL configuration..."
-	@sudo sh -c 'echo "MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)" > .env'
-	@sudo sh -c 'echo "MYSQL_USER=$(MYSQL_USER)" >> .env'
-	@sudo sh -c 'echo "MYSQL_PASSWORD=$(MYSQL_PASSWORD)" >> .env'
-	@echo ".env file created with database credentials."
-modify-nginx-config: # Modify NGINX configuration to include external domains
+create-nginx-config: # Create Templated NGINX configuration
 	@echo "Modifying NGINX configuration to include external domains..."
+	@sudo cp nginx.template.conf nginx.conf
 	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./nginx-conf/nginx.conf
 	@echo "NGINX configuration modified."
-modify-certbot-service: # Update Certbot configuration in docker-compose.yml
-	@echo "Updating Certbot configuration..."
-	@sudo sed -i 's/\[EMAIL\]/$(EMAIL)/g' ./docker-compose.yml
-	@sudo sed -i 's/\[EXTERNAL_DOMAIN\]/$(EXTERNAL_DOMAIN)/g' ./docker-compose.yml
-	@echo "Certbot configuration updated."
+create-env-sql-file: # Create .env file with MySQL configuration
+	@echo "Creating .env file with MySQL configuration..."
+	@sudo sh -c 'echo "MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)" > .env.sql'
+	@sudo sh -c 'echo "MYSQL_USER=$(MYSQL_USER)" >> .env.sql'
+	@sudo sh -c 'echo "MYSQL_PASSWORD=$(MYSQL_PASSWORD)" >> .env.sql'
+	@echo ".env file created with database credentials."
+create-env-cert-file: # Create .env file with certificate configuration
+	@echo "Creating .env file with MySQL configuration..."
+	@sudo sh -c 'echo "EMAIL=$(EMAIL)" > .env.cert'
+	@sudo sh -c 'echo "EXTERNAL_DOMAIN=$(EXTERNAL_DOMAIN)" >> .env.cert'
+	@echo ".env file created with database credentials."
+
 	
 # === CLEANUP ===
+nuke-config
+	@echo "Killing configuration cattle..."
+	@sudo rm .env.sql
+	@sudo rm .env.cert
+	@sudo rm ./nginx-conf/nginx.conf
+
 nuke-this: # destroy the pwd and everything inside of it including this file
 	@sudo rm -rf pwd
