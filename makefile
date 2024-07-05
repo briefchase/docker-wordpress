@@ -11,9 +11,9 @@ EMAIL := chaseglong@gmail.com
 # Usage:
 
 # Run in development mode
-go: setup clean run-mounted
+go: clean setup run-mounted
 # Run in production mode
-live: setup clean run-headless
+live: clean setup run-headless
 # Stop all containers and clean up
 clean: nuke-config
 
