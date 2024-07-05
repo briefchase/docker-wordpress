@@ -93,7 +93,7 @@ create-env-cert-file: # Create .env file with certificate configuration
 
 	
 # === CLEANUP ===
-nuke-config
+nuke-config: # Remove all files generated from configuration
 	@echo "Killing configuration cattle..."
 	@sudo rm .env.sql
 	@sudo rm .env.cert
